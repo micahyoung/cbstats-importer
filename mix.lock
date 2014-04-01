@@ -1,0 +1,5 @@
+[ "decimal": {:git, "git://github.com/ericmj/decimal.git", "ab1b6637aac1eabce5dc5a57290b5366878c2e84", []},
+  "ecto": {:git, "git://github.com/elixir-lang/ecto.git", "4e52242cddfcfe4c44399d554d20ac2221edc02b", []},
+  "json": {:git, "git://github.com/cblage/elixir-json.git", "725ea02b992aba35c18d0e9c7c3da54689670baf", []},
+  "poolboy": {:git, "git://github.com/devinus/poolboy.git", "64e1eaef0b1e88849c7e7ba9ff75f8cd4dba2a3b", []},
+  "postgrex": {:git, "git://github.com/ericmj/postgrex.git", "720b45b5613ef364bca3f5228e285489bb9f01d4", []} ]
