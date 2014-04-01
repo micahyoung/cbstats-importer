@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Import do
   def run(args) do
     Mix.Task.run "app.start", args
 
-    json_paths = Path.wildcard("../cbstats/data/json/*.json")
+    json_paths = Path.wildcard("data/json/*.json")
     Enum.each json_paths, fn(path) -> import_json_path(path) end
   end
 
