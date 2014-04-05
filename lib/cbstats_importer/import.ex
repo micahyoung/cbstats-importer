@@ -11,14 +11,16 @@ defmodule Mix.Tasks.Import do
     Mix.Task.run "app.start", args
 
     json_paths = Path.wildcard("data/json/*.json")
+    path_count = Enum.count json_paths
     start_mon = HashDict.new [index: 0, last_index: 0, last_seconds: Util.now_seconds]
 
     Enum.reduce json_paths, start_mon, fn(path, rate_mon) ->
       elapsed_seconds = Util.now_seconds - rate_mon[:last_seconds]
-      if elapsed_seconds > 5 do
+      if elapsed_seconds > 3 do
         elapsed_records = rate_mon[:index] - rate_mon[:last_index]
         rate = Float.floor(elapsed_records / elapsed_seconds)
-        IO.puts "#{rate} files/s"
+        percent = Float.floor(100 * rate_mon[:index] / path_count)
+        IO.puts "#{rate} files/s (#{percent}%)"
         last_seconds = Util.now_seconds
         last_index = rate_mon[:index]
       else
