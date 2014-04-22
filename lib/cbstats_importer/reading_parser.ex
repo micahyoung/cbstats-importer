@@ -1,4 +1,4 @@
-defmodule ReadingParser do
+defmodule CbstatsImporter.ReadingParser do
   def parse_json_file(json_path) do
     {:ok, json_content} = File.read(json_path)
     {:ok, json_hash} = JSON.decode(json_content)

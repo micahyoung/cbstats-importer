@@ -13,10 +13,8 @@ defmodule CbstatsImporter.Supervisor do
 
     # See http://elixir-lang.org/docs/stable/Supervisor.Behaviour.html
     # for other strategies and supported options
-    supervise(children, strategy: :one_for_one)
-
     # Repo configuration
-    tree = [ worker(Repo, []) ]
+    tree = [ worker(CbstatsImporter.Repo, []) ]
     supervise(tree, strategy: :one_for_all)
   end
 end
