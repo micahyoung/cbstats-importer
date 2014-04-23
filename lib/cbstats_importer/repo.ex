@@ -14,7 +14,7 @@ defmodule CbstatsImporter.Repo do
   end
 
   defp url(:prod) do
-    "ecto://user:pass@localhost/cbstats_importer_repo_prod"
+    "ecto://cbstats@localhost/cbstats_production"
   end
 
   @doc "The priv directory to load migrations and metadata."
