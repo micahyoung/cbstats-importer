@@ -2,7 +2,7 @@ defmodule CbstatsImporter.RateCount do
   defrecord Counter, paths_done: nil, total_paths: nil, last_paths_done: nil, last_micros: nil
 
   def init(total_paths) do
-    Counter.new [paths_done: 0, total_paths: total_paths, last_paths_done: 0, last_micros: CbstatsImporter.Util.now_microseconds]
+    Counter.new(paths_done: 0, total_paths: total_paths, last_paths_done: 0, last_micros: CbstatsImporter.Util.now_microseconds)
   end
 
   def update(counter) do
@@ -21,7 +21,7 @@ defmodule CbstatsImporter.RateCount do
       last_paths_done = counter.last_paths_done
     end
 
-    Counter.new [paths_done: counter.paths_done + 1, total_paths: counter.total_paths, last_paths_done: last_paths_done, last_micros: last_micros]
+    counter.update(paths_done: counter.paths_done + 1, total_paths: counter.total_paths, last_paths_done: last_paths_done, last_micros: last_micros)
   end
 end
 
