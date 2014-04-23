@@ -4,7 +4,7 @@ defmodule CbstatsImporter.Mixfile do
   def project do
     [ app: :cbstats_importer,
       version: "0.0.1",
-      elixir: "~> 0.12.5",
+      elixir: "~> 0.13.0",
       deps: deps ]
   end
 
