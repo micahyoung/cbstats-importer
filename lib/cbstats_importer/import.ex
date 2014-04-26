@@ -7,9 +7,6 @@ defmodule Mix.Tasks.Import do
   Import readings
   """
 
-  defrecord PartitionSet, partitions: HashSet.new
-  defrecord PathPartition, paths: HashSet.new, paths_scanned: 0
-
   def run(args) do
     Mix.Task.run "app.start", args
     child_count = 4
@@ -19,9 +16,30 @@ defmodule Mix.Tasks.Import do
     items_per_chunk = Float.ceil(path_count/child_count)
     path_chunks = Enum.chunk(Enum.shuffle(json_paths), items_per_chunk, items_per_chunk, [])
 
-    Enum.each path_chunks, fn(paths) ->
-      child = spawn(fn -> CbstatsImporter.ImportProcess.import_loop() end)
-      send(child, {:import_paths, paths})
+    parent = Process.self()
+
+    children = Enum.map path_chunks, fn(paths) ->
+      spawn_link(fn ->
+        CbstatsImporter.ImportProcess.import_paths(json_paths)
+        send parent, { :imported, Process.self() }
+      end)
+    end
+
+    wait_for_children(children)
+  end
+
+  def wait_for_children([]) do
+    IO.puts "DONE"
+  end
+
+  def wait_for_children(children) do
+    receive do
+      {:imported, child} -> 
+        remaining_children = Enum.reject children, fn(c) ->
+          child == c
+        end
+
+        wait_for_children(remaining_children)
     end
   end
 end

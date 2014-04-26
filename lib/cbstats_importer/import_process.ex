@@ -1,14 +1,5 @@
 defmodule CbstatsImporter.ImportProcess do
-  def import_loop() do
-    receive do
-      {:import_paths, paths} ->
-        {:ok, count} = import_json_path(paths)
-        import_loop()
-      reason -> IO.puts "Failed #{reason}"
-    end
-  end
-
-  defp import_json_path(json_paths) do
+  def import_paths(json_paths) do
     path_count = Enum.count(json_paths)
     counter = CbstatsImporter.RateCount.init(path_count)
 
