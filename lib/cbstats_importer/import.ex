@@ -20,7 +20,7 @@ defmodule Mix.Tasks.Import do
 
     children = Enum.map path_chunks, fn(paths) ->
       spawn_link(fn ->
-        CbstatsImporter.ImportProcess.import_paths(json_paths)
+        CbstatsImporter.ImportProcess.import_paths(paths)
         send parent, { :imported, Process.self() }
       end)
     end
