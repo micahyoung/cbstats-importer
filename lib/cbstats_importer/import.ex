@@ -29,11 +29,8 @@ defmodule Mix.Tasks.Import do
 
   def wait_for_children(children) do
     receive do
-      {:imported, child} -> 
-        remaining_children = Enum.reject children, fn(c) ->
-          child == c
-        end
-
+      {:imported, child} ->
+        remaining_children = Enum.reject children, &(&1 == child)
         wait_for_children(remaining_children)
     end
   end
