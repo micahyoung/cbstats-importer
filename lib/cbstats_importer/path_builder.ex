@@ -19,7 +19,7 @@ defmodule CbstatsImporter.PathBuilder do
 
   def strip_index(chunked_index_paths) do
     Enum.map chunked_index_paths, fn(index_paths) ->
-      Enum.map(index_paths, &(elem(&1, 0)))
+      Enum.map(index_paths, fn({k, v}) -> k end)
     end
   end
 end
