@@ -1,21 +1,25 @@
 defmodule CbstatsImporter.PathBuilder do
   def chunk_paths(path_wildcard, chunk_count) do
     paths = Path.wildcard(path_wildcard)
-    indexed_paths = Enum.with_index(paths)
 
-    chunk_sorted_indexed_paths = Enum.sort(indexed_paths, &(indexed_path_compare(&1, &2, chunk_count)))
-    chunked_index_paths = Enum.chunk_by(chunk_sorted_indexed_paths, &(rem(elem(&1, 1), chunk_count)))
+    paths |> chunk_index(chunk_count) |> chunk_sort |> chunk |> strip_index
+  end
 
+  defp chunk_index(paths, chunk_count) do
+    Enum.map(Enum.with_index(paths), fn({k, v}) -> {k, rem(v, chunk_count)} end)
+  end
+
+  defp chunk_sort(chunk_indexed_paths) do
+    Enum.sort(chunk_indexed_paths, fn({_, v1}, {_, v2}) -> v1 <= v2 end)
+  end
+
+  defp chunk(chunk_sorted_indexed_paths) do
+    Enum.chunk_by(chunk_sorted_indexed_paths, fn({_, v})-> v end)
+  end
+
+  def strip_index(chunked_index_paths) do
     Enum.map chunked_index_paths, fn(index_paths) ->
       Enum.map(index_paths, &(elem(&1, 0)))
     end
-  end
-
-  defp path_index_path(path) do
-    name = File.rootname(File.basename(path))
-  end
-
-  defp indexed_path_compare(path1, path2, chunk_count) do
-    rem(elem(path1, 1), chunk_count) <= rem(elem(path2, 1), chunk_count)
   end
 end
