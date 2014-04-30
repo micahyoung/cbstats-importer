@@ -3,27 +3,23 @@ defmodule CbstatsImporterTest.PathBuilder do
 
   setup do
     drop_fixtures
-
-    Enum.map Enum.to_list(0..9), fn(index) ->
-      File.touch!("test/fixtures/#{index}.json")
-    end
-
-    :ok
+    create_fixtures
   end
 
-  test "the truth" do
-    path_wildcard = "test/fixtures/*"
-    assert CbstatsImporter.PathBuilder.chunk_paths(path_wildcard, 3) == [
-      ["test/fixtures/0.json",
-       "test/fixtures/3.json",
-       "test/fixtures/6.json",
-       "test/fixtures/9.json"],
-      ["test/fixtures/1.json",
-       "test/fixtures/4.json",
-       "test/fixtures/7.json"],
-      ["test/fixtures/2.json",
-       "test/fixtures/5.json",
-       "test/fixtures/8.json"]
+  test ".path_chunks" do
+    path_wildcard = "test/fixtures/temp/*"
+    chunk_count = 3
+    assert CbstatsImporter.PathBuilder.chunk_paths(path_wildcard, chunk_count) == [
+      ["test/fixtures/temp/0.json",
+       "test/fixtures/temp/3.json",
+       "test/fixtures/temp/6.json",
+       "test/fixtures/temp/9.json"],
+      ["test/fixtures/temp/1.json",
+       "test/fixtures/temp/4.json",
+       "test/fixtures/temp/7.json"],
+      ["test/fixtures/temp/2.json",
+       "test/fixtures/temp/5.json",
+       "test/fixtures/temp/8.json"]
     ]
   end
 
@@ -31,9 +27,14 @@ defmodule CbstatsImporterTest.PathBuilder do
     drop_fixtures
   end
 
+  defp create_fixtures do
+    File.mkdir_p!("test/fixtures/temp/")
+    Enum.map(0..9, &(File.touch!("test/fixtures/temp/#{&1}.json")))
+    :ok
+  end
+
   defp drop_fixtures do
-    fixtures = Path.wildcard("test/fixtures/*")
-    Enum.each(fixtures, &(File.rm!(&1)))
+    File.rm_rf!("test/fixtures/temp/")
     :ok
   end
 end
