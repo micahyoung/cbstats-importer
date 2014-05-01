@@ -8,5 +8,4 @@ defmodule CbstatsImporter.ReadingQuery do
 
     CbstatsImporter.Repo.all(query)
   end
-
 end

@@ -1,6 +1,7 @@
 defmodule CbstatsImporter.PathBuilder do
-  def chunk_paths(path_wildcard, chunk_count) do
-    paths = Path.wildcard(path_wildcard)
+  def chunk_paths(path, chunk_count) do
+    wildcard = Path.join(path, "*")
+    paths = Path.wildcard(wildcard)
 
     paths |> chunk_index(chunk_count) |> chunk_sort |> chunk |> strip_index
   end

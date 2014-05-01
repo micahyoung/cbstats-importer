@@ -8,9 +8,12 @@ defmodule Mix.Tasks.Import do
   """
 
   def run(args) do
-    Mix.Task.run "app.start", args
-    child_count = :erlang.system_info(:schedulers_online)
-    path_chunks = CbstatsImporter.PathBuilder.chunk_paths("data/json/*.json", child_count)
+    Mix.Task.run "app.start", []
+
+    options = elem OptionParser.parse(args, switches: [processes: :integer]), 0
+    data_root = options[:path] || "data/json"
+    child_count = options[:processes] || :erlang.system_info(:schedulers_online)
+    path_chunks = CbstatsImporter.PathBuilder.chunk_paths(data_root, child_count)
 
     parent = Process.self()
     children = Enum.map path_chunks, fn(paths) ->

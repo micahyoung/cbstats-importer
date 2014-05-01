@@ -1,0 +1,17 @@
+{
+  "ok":true,
+  "meta":[],
+  "results":[{
+    "id":1,
+    "status":"Active",
+    "availableBikes":25,
+    "availableDocks":30
+  },
+  {
+    "id":2,
+    "status":"Active",
+    "availableBikes":35,
+    "availableDocks":40
+  }],
+  "lastUpdate":1389067157
+}

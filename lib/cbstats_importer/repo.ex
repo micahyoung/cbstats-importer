@@ -6,11 +6,11 @@ defmodule CbstatsImporter.Repo do
 
   @doc "The URL to reach the database."
   defp url(:dev) do
-    "ecto://cbstats@localhost/cbstats_development"
+    "ecto://cbstats@localhost/cbstats_importer_development"
   end
 
   defp url(:test) do
-    "ecto://cbstats@localhost/cbstats_test"
+    "ecto://cbstats@localhost/cbstats_importer_test"
   end
 
   defp url(:prod) do

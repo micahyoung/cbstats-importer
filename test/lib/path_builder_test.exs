@@ -7,9 +7,9 @@ defmodule CbstatsImporterTest.PathBuilder do
   end
 
   test ".path_chunks" do
-    path_wildcard = "test/fixtures/temp/*"
+    data_path = "test/fixtures/temp/"
     chunk_count = 3
-    assert CbstatsImporter.PathBuilder.chunk_paths(path_wildcard, chunk_count) == [
+    assert CbstatsImporter.PathBuilder.chunk_paths(data_path, chunk_count) == [
       ["test/fixtures/temp/0.json",
        "test/fixtures/temp/3.json",
        "test/fixtures/temp/6.json",
