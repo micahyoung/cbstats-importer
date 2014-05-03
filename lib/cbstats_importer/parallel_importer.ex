@@ -1,6 +1,10 @@
 defmodule CbstatsImporter.ParallelImporter do
   defrecord Record, child_fun: nil, callback_fun: nil, callback_acc: nil
 
+  defmacro process_count do
+    quote do: unquote(:erlang.system_info(:schedulers_online))
+  end
+
   def import(files, child_fun, callback_fun) do
     record = Record.new child_fun: child_fun, callback_fun: callback_fun
     spawn_importers(files, [], record)
@@ -8,7 +12,7 @@ defmodule CbstatsImporter.ParallelImporter do
 
   # We already have 4 currently running, don't spawn new ones
   defp spawn_importers(files, queued, record) when
-      length(queued) >= 4 do
+      length(queued) >= process_count do
     # IO.puts "We already have 4 currently running, don't spawn new ones"
     wait_for_messages(files, queued, record)
   end
