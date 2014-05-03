@@ -3,4 +3,8 @@ defmodule CbstatsImporter.Util do
     {megas, secs, millis} = :os.timestamp()
     ((megas * 1_000_000) + secs) * 1_000_000 + millis
   end
+
+  def now_datetime do
+    :calendar.universal_time |> Ecto.DateTime.from_erl
+  end
 end

@@ -7,8 +7,8 @@ defmodule CbstatsImporter.ReadingImporter do
         status: result["status"],
         available_bikes: result["availableBikes"],
         available_docks: result["availableDocks"],
-        created_at: now_datetime,
-        updated_at: now_datetime
+        created_at: CbstatsImporter.Util.now_datetime,
+        updated_at: CbstatsImporter.Util.now_datetime
       ]
       new_readings = [new_reading|readings]
     else
@@ -24,9 +24,5 @@ defmodule CbstatsImporter.ReadingImporter do
     if length(insertable_readings) > 0 do
       CbstatsImporter.Repo.insert_entities(insertable_readings)
     end
-  end
-
-  defp now_datetime do
-    Ecto.DateTime.from_erl(:calendar.universal_time())
   end
 end
