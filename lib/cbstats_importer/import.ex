@@ -10,12 +10,15 @@ defmodule Mix.Tasks.Import do
   def run(args) do
     Mix.Task.run "app.start", []
 
-    options = elem OptionParser.parse(args, switches: [processes: :integer]), 0
+    options = elem(OptionParser.parse(args), 0)
     data_root = options[:path] || "data/json"
-    child_count = options[:processes] || :erlang.system_info(:schedulers_online)
 
     files = Path.wildcard(Path.join(data_root, "*"))
-    CbstatsImporter.ParallelImporter.import(files)
+    callback_fun = fn(_file, last_counter) ->
+      update_counter = last_counter || CbstatsImporter.RateCount.init(length(files))
+      CbstatsImporter.RateCount.update(update_counter)
+    end
+    CbstatsImporter.ParallelImporter.import(files, callback_fun)
   end
 end
 

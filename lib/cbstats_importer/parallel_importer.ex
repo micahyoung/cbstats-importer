@@ -1,22 +1,24 @@
 defmodule CbstatsImporter.ParallelImporter do
-  def import(files) do
-    counter = CbstatsImporter.RateCount.init(length files)
-    spawn_importers(files, [], counter)
+  defrecord Callback, fun: nil, last_result: nil
+
+  def import(files, callback_fun) do
+    callback = Callback.new fun: callback_fun
+    spawn_importers(files, [], callback)
   end
 
   # We already have 4 currently running, don't spawn new ones
-  defp spawn_importers(files, queued, counter) when
+  defp spawn_importers(files, queued, callback) when
       length(queued) >= 4 do
     # IO.puts "We already have 4 currently running, don't spawn new ones"
-    wait_for_messages(files, queued, counter)
+    wait_for_messages(files, queued, callback)
   end
 
   # Spawn a compiler for each file in the list until we reach the limit
-  defp spawn_importers([h|t], queued, counter) do
+  defp spawn_importers([h|t], queued, callback) do
     # IO.puts "Spawn a compiler for each file in the list until we reach the limit"
     parent = Process.self()
 
-    child  = spawn_link fn ->
+    child = spawn_link fn ->
       try do
         {:ok, 1} = CbstatsImporter.ImportProcess.import_path(h)
         send parent, { :imported, Process.self(), h }
@@ -26,30 +28,29 @@ defmodule CbstatsImporter.ParallelImporter do
       end
     end
 
-    spawn_importers(t, [{child,h}|queued], counter)
+    spawn_importers(t, [{child,h}|queued], callback)
   end
 
   # No more files, nothing waiting, queue is empty, we are done
-  defp spawn_importers([], [], counter) do
+  defp spawn_importers([], [], callback) do
     # IO.puts "No more files, nothing waiting, queue is empty, we are done"
     :done
   end
 
   # No more files, but queue and waiting are not full or do not match
-  defp spawn_importers([], queued, counter) do
+  defp spawn_importers([], queued, callback) do
     # IO.puts "No more files, but queue and waiting are not full or do not match"
-    wait_for_messages([], queued, counter)
+    wait_for_messages([], queued, callback)
   end
 
   # Wait for messages from child processes
-  defp wait_for_messages(files, queued, counter) do
+  defp wait_for_messages(files, queued, callback) do
     receive do
       { :imported, child, file } ->
         new_queued  = List.keydelete(queued, child, 0)
-        # Sometimes we may have spurious entries in the waiting
-        # list because someone invoked try/rescue UndefinedFunctionError
-        new_counter = CbstatsImporter.RateCount.update(counter)
-        spawn_importers(files, new_queued, new_counter)
+        result = callback.fun.(file, callback.last_result)
+        new_callback = callback.update(last_result: result)
+        spawn_importers(files, new_queued, new_callback)
       { :failure, child, kind, reason, stacktrace } ->
         IO.puts "child: failure"
 
