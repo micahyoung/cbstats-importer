@@ -32,7 +32,7 @@ defmodule CbstatsImporter.ParallelImporter do
   end
 
   # No more files, nothing waiting, queue is empty, we are done
-  defp spawn_importers([], [], callback) do
+  defp spawn_importers([], [], _callback) do
     # IO.puts "No more files, nothing waiting, queue is empty, we are done"
     :done
   end

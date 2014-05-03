@@ -1,7 +1,5 @@
 defmodule CbstatsImporter.ReadingImporter do
-  def import_results([result|remaining_results], meta) do
-    {reading_datetime, existing_reading_station_ids, readings} = meta
-
+  def import_results([result|remaining_results], reading_datetime, existing_reading_station_ids, readings) do
     if !Enum.member?(existing_reading_station_ids, result["id"]) do
       new_reading = CbstatsImporter.Reading.new [
         station_id: result["id"],
@@ -17,12 +15,10 @@ defmodule CbstatsImporter.ReadingImporter do
       new_readings = readings
     end
 
-    next_meta = {reading_datetime, existing_reading_station_ids, new_readings}
-    import_results(remaining_results, next_meta)
+    import_results(remaining_results, reading_datetime, existing_reading_station_ids, new_readings)
   end
 
-  def import_results([], meta) do
-    {reading_datetime, existing_reading_station_ids, readings} = meta
+  def import_results([], _reading_datetime, _existing_reading_station_ids, readings) do
     insertable_readings = List.flatten readings
 
     if length(insertable_readings) > 0 do
@@ -34,4 +30,3 @@ defmodule CbstatsImporter.ReadingImporter do
     Ecto.DateTime.from_erl(:calendar.universal_time())
   end
 end
-

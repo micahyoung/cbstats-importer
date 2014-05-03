@@ -4,4 +4,3 @@ defmodule CbstatsImporter.Util do
     ((megas * 1_000_000) + secs) * 1_000_000 + millis
   end
 end
-

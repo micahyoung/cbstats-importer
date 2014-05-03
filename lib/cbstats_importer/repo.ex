@@ -4,19 +4,6 @@ defmodule CbstatsImporter.Repo do
   @doc "Adapter configuration"
   def conf(env), do: parse_url url(env)
 
-  @doc "The URL to reach the database."
-  defp url(:dev) do
-    "ecto://cbstats@localhost/cbstats_importer_development"
-  end
-
-  defp url(:test) do
-    "ecto://cbstats@localhost/cbstats_importer_test"
-  end
-
-  defp url(:prod) do
-    "ecto://cbstats@localhost/cbstats_production"
-  end
-
   @doc "The priv directory to load migrations and metadata."
   def priv do
     app_dir(:cbstats_importer, "priv/repo")
@@ -30,5 +17,17 @@ defmodule CbstatsImporter.Repo do
     adapter.query(__MODULE__, sql, opts)
 
     :ok
+  end
+
+  defp url(:dev) do
+    "ecto://cbstats@localhost/cbstats_development"
+  end
+
+  defp url(:test) do
+    "ecto://cbstats@localhost/cbstats_importer_test"
+  end
+
+  defp url(:prod) do
+    "ecto://cbstats@localhost/cbstats_production"
   end
 end
