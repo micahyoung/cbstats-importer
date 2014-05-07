@@ -14,7 +14,14 @@ defmodule CbstatsImporter.Repo do
 
     remaining_value_clauses = Enum.map remaining_inserts, fn(insert) -> Regex.replace(~r/INSERT.*VALUES/sm, insert, "") end
     sql = Enum.join([first_insert|remaining_value_clauses], ",\n")
-    adapter.query(__MODULE__, sql, opts)
+
+    try do
+      adapter.query(__MODULE__, sql, opts)
+    rescue
+      e ->
+        IO.puts sql
+        raise e
+    end
 
     :ok
   end

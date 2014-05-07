@@ -28,7 +28,7 @@ defmodule CbstatsImporter.ParallelImporter do
         send parent, { :imported, Process.self(), result }
       catch
         kind, reason ->
-          send parent, { :failure, Process.self(), kind, reason, System.stacktrace }
+          send parent, { :failure, Process.self(), h, kind, reason, System.stacktrace }
       end
     end
 
@@ -55,12 +55,9 @@ defmodule CbstatsImporter.ParallelImporter do
         {:ok, new_acc} = record.callback_fun.(result, record.callback_acc)
         new_record = record.update(callback_acc: new_acc)
         spawn_importers(files, new_queued, new_record)
-      { :failure, child, kind, reason, stacktrace } ->
-        IO.puts "child: failure"
-
-      {^child, file} = List.keyfind(queued, child, 1)
-      IO.puts "== Compilation error on file #{file} =="
-      Erlang.erlang.raise(kind, reason, stacktrace)
+      { :failure, child, file, kind, reason, stacktrace } ->
+        IO.puts "child: failure for file #{file}"
+        :erlang.raise(kind, reason, stacktrace)
     end
   end
 end
