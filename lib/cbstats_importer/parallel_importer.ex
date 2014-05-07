@@ -56,7 +56,7 @@ defmodule CbstatsImporter.ParallelImporter do
         new_record = record.update(callback_acc: new_acc)
         spawn_importers(files, new_queued, new_record)
       { :failure, child, file, kind, reason, stacktrace } ->
-        IO.puts "child: failure for file #{file}"
+        IO.puts "failure for file #{file} on child: #{inspect child}"
         :erlang.raise(kind, reason, stacktrace)
     end
   end
