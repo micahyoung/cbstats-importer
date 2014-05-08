@@ -7,12 +7,11 @@ defmodule CbstatsImporter.RateCount do
 
   def update(counter) do
     elapsed_micros = CbstatsImporter.Util.now_microseconds - counter.last_micros
-    percent = 100 * (counter.paths_done + 1) / counter.total_paths
+    percent = get_percent(counter.paths_done, counter.total_paths)
     if elapsed_micros > 3_000_000 || percent == 100 do
       elapsed_records = counter.paths_done - counter.last_paths_done
-
-      rate = Float.floor(elapsed_records / (elapsed_micros / 1_000_000))
-      IO.puts "[#{Float.ceil(percent)}%] #{rate} files/s "
+      rate = get_rate(elapsed_records, elapsed_micros)
+      Mix.shell.info "[#{percent}%] #{rate} files/s "
 
       last_micros = CbstatsImporter.Util.now_microseconds
       last_paths_done = counter.paths_done
@@ -22,6 +21,14 @@ defmodule CbstatsImporter.RateCount do
     end
 
     counter.update(paths_done: counter.paths_done + 1, total_paths: counter.total_paths, last_paths_done: last_paths_done, last_micros: last_micros)
+  end
+
+  defp get_percent(current_count, total_count) do
+    Float.ceil(100 * (current_count + 1) / total_count)
+  end
+
+  defp get_rate(elapsed_records, elapsed_micros) do
+    Float.floor(elapsed_records / (elapsed_micros / 1_000_000))
   end
 end
 
