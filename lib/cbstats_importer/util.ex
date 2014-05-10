@@ -7,4 +7,8 @@ defmodule CbstatsImporter.Util do
   def now_datetime do
     :calendar.universal_time |> Ecto.DateTime.from_erl
   end
+
+  def datetime_to_date(datetime) do
+    datetime.to_erl |> elem(0) |> Ecto.Date.from_erl
+  end
 end

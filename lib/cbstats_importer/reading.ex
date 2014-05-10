@@ -3,6 +3,7 @@ defmodule CbstatsImporter.Reading do
 
   queryable "readings" do
     belongs_to :station, CbstatsImporter.Station
+    belongs_to :reading_day, CbstatsImporter.ReadingDay
     field :status, :string
     field :available_bikes, :integer
     field :available_docks, :integer
