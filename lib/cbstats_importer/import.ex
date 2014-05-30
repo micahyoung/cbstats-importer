@@ -14,29 +14,6 @@ defmodule Mix.Tasks.Import do
     data_root = options[:path] || "data/json"
 
     files = Path.wildcard(Path.join(data_root, "*"))
-
-    import_reading_days(files)
-    import_readings(files)
-  end
-
-  defp import_reading_days(files) do
-    child_fun = fn(file) ->
-      {reading_datetime, _results} = CbstatsImporter.ReadingParser.parse_json_file(file)
-      reading_date = CbstatsImporter.Util.datetime_to_date(reading_datetime)
-
-      {:ok, reading_date}
-    end
-    callback_fun = fn(reading_date, last_counter) ->
-      CbstatsImporter.ReadingQuery.find_or_create_reading_day(reading_date)
-
-      update_counter = last_counter || CbstatsImporter.RateCount.init(length(files))
-      new_counter = CbstatsImporter.RateCount.update(update_counter)
-      {:ok, new_counter}
-    end
-    CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
-  end
-
-  defp import_readings(files) do
     child_fun = fn(file) ->
       CbstatsImporter.ImportProcess.import_path(file)
       {:ok, nil}

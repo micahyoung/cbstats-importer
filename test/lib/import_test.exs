@@ -13,12 +13,8 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
       Mix.Tasks.Import.run(["--path", "test/fixtures/data/json"])
     end) =~ ~r{\[100%\] \d* files/s}
 
-    reading_day_query = from d in CbstatsImporter.ReadingDay, select: d
-    [reading_day] = CbstatsImporter.Repo.all(reading_day_query)
-    assert = reading_day.taken_at_date Ecto.Date[year: 2014, month: 1, day: 7]
-
-    reading_query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
-    readings = CbstatsImporter.Repo.all(reading_query)
+    query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
+    readings = CbstatsImporter.Repo.all(query)
     r1 = Enum.at(readings, 0)
     assert r1.station_id ==  1
     assert r1.status ==  "Active"
@@ -55,8 +51,6 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
 
   defp drop_readings do
     query = from CbstatsImporter.Reading, where: true
-    CbstatsImporter.Repo.delete_all(query)
-    query = from CbstatsImporter.ReadingDay, where: true
     CbstatsImporter.Repo.delete_all(query)
     :ok
   end
