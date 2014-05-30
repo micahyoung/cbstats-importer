@@ -2,7 +2,7 @@ defmodule CbstatsImporter.ParallelImporter do
   defrecord Record, child_fun: nil, callback_fun: nil, callback_acc: nil
 
   defmacro process_count do
-    quote do: unquote(:erlang.system_info(:schedulers_online))
+    quote do: unquote(:erlang.system_info(:schedulers_online) |> Kernel.*(1.5) |> Float.floor)
   end
 
   def import(files, child_fun, callback_fun) do
