@@ -35,6 +35,6 @@ defmodule CbstatsImporter.Repo do
   end
 
   defp url(:prod) do
-    "ecto://cbstats@localhost/cbstats_production"
+    "ecto://cbstats@192.168.1.2/cbstats_production"
   end
 end

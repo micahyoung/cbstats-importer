@@ -1,0 +1,62 @@
+***************
+*** 1,12 ****
+  defmodule CbstatsImporter.ParallelImporter do
+-   defrecord Record, child_fun: nil, callback_fun: nil, callback_acc: nil
+  
+    defmacro process_count do
+      quote do: unquote(:erlang.system_info(:schedulers_online) |> Kernel.*(1.5) |> Float.floor)
+    end
+  
+    def import(files, child_fun, callback_fun) do
+-     record = Record.new child_fun: child_fun, callback_fun: callback_fun
+      spawn_importers(files, [], record)
+    end
+  
+--- 1,14 ----
+  defmodule CbstatsImporter.ParallelImporter do
++   defmodule Record do
++     defstruct child_fun: nil, callback_fun: nil, callback_acc: nil
++   end
+  
+    defmacro process_count do
+      quote do: unquote(:erlang.system_info(:schedulers_online) |> Kernel.*(1.5) |> Float.floor)
+    end
+  
+    def import(files, child_fun, callback_fun) do
++     record = %Record{ child_fun: child_fun, callback_fun: callback_fun}
+      spawn_importers(files, [], record)
+    end
+  
+***************
+*** 20,34 ****
+    # Spawn a compiler for each file in the list until we reach the limit
+    defp spawn_importers([h|t], queued, record) do
+      # IO.puts "Spawn a compiler for each file in the list until we reach the limit"
+-     parent = Process.self()
+  
+      child = spawn_link fn ->
+        try do
+          {:ok, result} = record.child_fun.(h)
+-         send parent, { :imported, Process.self(), result }
+        catch
+          kind, reason ->
+-           send parent, { :failure, Process.self(), h, kind, reason, System.stacktrace }
+        end
+      end
+  
+--- 22,36 ----
+    # Spawn a compiler for each file in the list until we reach the limit
+    defp spawn_importers([h|t], queued, record) do
+      # IO.puts "Spawn a compiler for each file in the list until we reach the limit"
++     parent = self()
+  
+      child = spawn_link fn ->
+        try do
+          {:ok, result} = record.child_fun.(h)
++         send parent, { :imported, self(), result }
+        catch
+          kind, reason ->
++           send parent, { :failure, self(), h, kind, reason, System.stacktrace }
+        end
+      end
+  

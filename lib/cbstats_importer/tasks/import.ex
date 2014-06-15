@@ -26,4 +26,3 @@ defmodule Mix.Tasks.Import do
     CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
   end
 end
-

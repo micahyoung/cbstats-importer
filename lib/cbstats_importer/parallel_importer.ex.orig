@@ -1,7 +1,5 @@
 defmodule CbstatsImporter.ParallelImporter do
-  defmodule Record do
-    defstruct child_fun: nil, callback_fun: nil, callback_acc: nil
-  end
+  defrecord Record, child_fun: nil, callback_fun: nil, callback_acc: nil
 
   defmacro process_count do
     quote do: 1 #unquote(:erlang.system_info(:schedulers_online) |> Kernel.*(1.5) |> Float.floor)

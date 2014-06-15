@@ -1,7 +1,7 @@
 defmodule CbstatsImporter.Station do
   use Ecto.Model
 
-  queryable "stations" do
+  schema "stations" do
     has_many :readings, CbstatsImporter.Reading
     field :latitude, :float
     field :longitude, :float
