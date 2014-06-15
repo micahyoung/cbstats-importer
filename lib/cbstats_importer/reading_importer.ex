@@ -1,7 +1,7 @@
 defmodule CbstatsImporter.ReadingImporter do
   def import_results([result|remaining_results], reading_datetime, existing_reading_station_ids, readings) do
     if !Enum.member?(existing_reading_station_ids, result["id"]) do
-      new_reading = CbstatsImporter.Reading.new [
+      new_reading = %CbstatsImporter.Reading{
         station_id: result["id"],
         taken_at: reading_datetime,
         status: result["status"],
@@ -9,7 +9,7 @@ defmodule CbstatsImporter.ReadingImporter do
         available_docks: result["availableDocks"],
         created_at: CbstatsImporter.Util.now_datetime,
         updated_at: CbstatsImporter.Util.now_datetime
-      ]
+      }
       new_readings = [new_reading|readings]
     else
       new_readings = readings
