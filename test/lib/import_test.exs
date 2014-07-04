@@ -1,12 +1,28 @@
+defmodule CbstatsImporterTest.TestHelper do
+  import Ecto.Query
+
+  def drop_readings do
+    query = from CbstatsImporter.Reading, where: true
+    CbstatsImporter.Repo.delete_all(query)
+    :ok
+  end
+end
+
 defmodule CbstatsImporterTest.Mix.Tasks.Import do
   import Ecto.Query
   use ExUnit.Case
   import ExUnit.CaptureIO
 
   setup do
-    drop_readings
+    CbstatsImporterTest.TestHelper.drop_readings
+
+    on_exit fn ->
+      CbstatsImporterTest.TestHelper.drop_readings
+    end
+
     :ok
   end
+
 
   test ".run" do
     assert capture_io(fn ->
@@ -43,15 +59,5 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
     assert r4.available_docks == 40
     assert r4.taken_at == %Ecto.DateTime{year: 2014, month: 1, day: 7, hour: 3, min: 59, sec: 17}
   end
-
-  teardown do
-    drop_readings
-    :ok
-  end
-
-  defp drop_readings do
-    query = from CbstatsImporter.Reading, where: true
-    CbstatsImporter.Repo.delete_all(query)
-    :ok
-  end
 end
+
