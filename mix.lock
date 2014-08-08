@@ -1,5 +1,5 @@
-%{"decimal": {:package, "0.2.2"},
-  "ecto": {:git, "git://github.com/elixir-lang/ecto.git", "6f6c5edda473964a3405304c731773618ac196aa", []},
+%{"decimal": {:package, "0.2.4"},
+  "ecto": {:git, "git://github.com/elixir-lang/ecto.git", "10ab9e840e99d43d6fd26f6e59beeca9b20f27b4", []},
   "json": {:git, "git://github.com/cblage/elixir-json.git", "f386b18431bbc0a0b6d38519ec2f256b5a040668", []},
   "poolboy": {:package, "1.2.1"},
-  "postgrex": {:git, "git://github.com/ericmj/postgrex.git", "bee65577f3913821ce9410062c10580e039976da", []}}
+  "postgrex": {:git, "git://github.com/ericmj/postgrex.git", "3c154aceebf6a2936cb3a778bc44cbfe1105f338", []}}

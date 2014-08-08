@@ -27,7 +27,7 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
   test ".run" do
     assert capture_io(fn ->
       Mix.Tasks.Import.run(["--path", "test/fixtures/data/json"])
-    end) =~ ~r{\[100%\] \d* files/s}
+    end) =~ ~r{\[100.0%\] [\d.]* files/s}
 
     query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
     readings = CbstatsImporter.Repo.all(query)
