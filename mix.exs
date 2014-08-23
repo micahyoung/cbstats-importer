@@ -4,7 +4,7 @@ defmodule CbstatsImporter.Mixfile do
   def project do
     [ app: :cbstats_importer,
       version: "0.0.1",
-      elixir: "~> 0.15.0",
+      elixir: "~> 1.0",
       deps: deps ]
   end
 
@@ -20,8 +20,8 @@ defmodule CbstatsImporter.Mixfile do
   # To specify particular versions, regardless of the tag, do:
   # { :barbat, "~> 0.1", github: "elixir-lang/barbat" }
   defp deps do
-    [ { :postgrex, "~> 0.5.0", github: "ericmj/postgrex", override: true },
-      { :ecto, github: "elixir-lang/ecto" },
-      { :json, github: "cblage/elixir-json" } ]
+    [ {:ecto, "~> 0.2.5", git: "https://github.com/elixir-lang/ecto", tag: "v0.2.5"},
+      {:postgrex, "~> 0.6.0", override: true, git: "https://github.com/ericmj/postgrex", tag: "v0.6.0"},
+      {:json, "~> 0.3.0", git: "https://github.com/cblage/elixir-json", tag: "v0.3.2"} ]
   end
 end

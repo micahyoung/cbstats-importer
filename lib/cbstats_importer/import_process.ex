@@ -1,6 +1,6 @@
 defmodule CbstatsImporter.ImportProcess do
-  def import_path(path) do
-    {reading_datetime, results} = CbstatsImporter.ReadingParser.parse_json_file(path)
+  def import_reading_json(json_content) do
+    {reading_datetime, results} = CbstatsImporter.ReadingParser.parse_json(json_content)
     CbstatsImporter.TimestampImporter.import_timestamp(reading_datetime)
 
     existing_reading_station_ids = CbstatsImporter.ReadingQuery.timestamp_station_ids(reading_datetime)

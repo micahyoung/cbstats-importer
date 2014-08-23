@@ -1,11 +1,10 @@
 defmodule CbstatsImporter.ReadingParser do
-  def parse_json_file(json_path) do
-    {:ok, json_content} = File.read(json_path)
+  def parse_json(json_content) do
     {:ok, json_hash} = JSON.decode(json_content)
-    {:ok, timestamp} = HashDict.fetch(json_hash, "lastUpdate")
+    {:ok, timestamp} = Map.fetch(json_hash, "lastUpdate")
     reading_datetime = timestamp_datetime(timestamp)
 
-    {:ok, results} = HashDict.fetch(json_hash, "results")
+    {:ok, results} = Map.fetch(json_hash, "results")
     {reading_datetime, results}
   end
 

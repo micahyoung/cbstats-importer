@@ -36,8 +36,8 @@ defmodule CbstatsImporter.ParallelImporter do
   end
 
   # No more files, nothing waiting, queue is empty, we are done
-  defp spawn_importers([], [], _record) do
-    :done
+  defp spawn_importers([], [], record) do
+    {:done, record.callback_acc}
   end
 
   # No more files, but queue and waiting are not full or do not match

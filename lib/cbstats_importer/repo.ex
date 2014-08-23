@@ -9,23 +9,6 @@ defmodule CbstatsImporter.Repo do
     app_dir(:cbstats_importer, "priv/repo")
   end
 
-  def insert_entities(entities, opts \\ []) do
-    [first_insert|remaining_inserts] = Enum.map entities, fn(entity) -> Ecto.Adapters.Postgres.SQL.insert(entity, []) end
-
-    remaining_value_clauses = Enum.map remaining_inserts, fn(insert) -> Regex.replace(~r/INSERT.*VALUES/sm, insert, "") end
-    sql = Enum.join([first_insert|remaining_value_clauses], ",\n")
-
-    try do
-      adapter.query(__MODULE__, sql, opts)
-    rescue
-      e ->
-        IO.puts sql
-        raise e
-    end
-
-    :ok
-  end
-
   defp url(:dev) do
     "ecto://cbstats@localhost/cbstats_development"
   end

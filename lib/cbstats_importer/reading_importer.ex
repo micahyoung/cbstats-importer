@@ -18,11 +18,13 @@ defmodule CbstatsImporter.ReadingImporter do
     import_results(remaining_results, reading_datetime, existing_reading_station_ids, new_readings)
   end
 
-  def import_results([], _reading_datetime, _existing_reading_station_ids, readings) do
+  def import_results([], reading_datetime, _existing_reading_station_ids, readings) do
     insertable_readings = List.flatten readings
 
-    if length(insertable_readings) > 0 do
-      CbstatsImporter.Repo.insert_entities(insertable_readings)
+    CbstatsImporter.Repo.transaction fn ->
+      Enum.each insertable_readings, fn(reading) ->
+        CbstatsImporter.Repo.insert(reading)
+      end
     end
   end
 end
