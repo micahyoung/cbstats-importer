@@ -3,12 +3,18 @@
   "meta":[],
   "results":[{
     "id":1,
+    "label":"Station 1",
+    "latitude":10.1,
+    "longitude":-10.2,
     "status":"Active",
     "availableBikes":25,
     "availableDocks":30
   },
   {
     "id":2,
+    "label":"Station 2",
+    "latitude":10.3,
+    "longitude":-10.4,
     "status":"Active",
     "availableBikes":35,
     "availableDocks":40

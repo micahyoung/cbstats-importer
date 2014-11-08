@@ -4,6 +4,9 @@ defmodule CbstatsImporter.StationImporter do
       if !Enum.member?(existing_station_ids, id) do
         station = %CbstatsImporter.Station{
           id: id,
+          latitude: attributes["latitude"],
+          longitude: attributes["longitude"],
+          label: attributes["label"],
           created_at: CbstatsImporter.Util.now_datetime,
           updated_at: CbstatsImporter.Util.now_datetime
         }

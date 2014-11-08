@@ -23,25 +23,29 @@ defmodule Mix.Tasks.Import do
     child_fun = fn(file_path) ->
       {:ok, json_content} = File.read(file_path)
       {_reading_datetime, results} = CbstatsImporter.ReadingParser.parse_json(json_content)
-      station_hash = Enum.reduce(results, HashDict.new, fn(x, acc) -> HashDict.put(acc, x["id"], Map.take(x, ["latitude", "longitude", "label"])) end)
+      stations_hash = Enum.reduce(results, HashDict.new, fn(x, acc) -> HashDict.put(acc, x["id"], Map.take(x, ["latitude", "longitude", "label"])) end)
 
-      {:ok, station_hash}
+      {:ok, stations_hash}
     end
 
     callback_fun = fn(new_station_dict, acc) ->
-      {acc_station_dict, last_counter} = acc || {nil, nil}
-      station_dict = HashDict.merge acc_station_dict || HashDict.new, new_station_dict
+      {acc_station_ids, last_counter} = acc || {Enum.into(CbstatsImporter.StationQuery.station_ids, HashSet.new), nil}
+
+      new_station_ids = Enum.into HashDict.keys(new_station_dict), HashSet.new
+      if HashSet.equal?(acc_station_ids, new_station_ids) do
+        next_station_ids = acc_station_ids
+      else
+        next_station_ids = HashSet.union(acc_station_ids, new_station_ids)
+        CbstatsImporter.StationImporter.import_stations(new_station_dict, acc_station_ids)
+      end
 
       update_counter = last_counter || CbstatsImporter.RateCount.init(length(files))
       new_counter = CbstatsImporter.RateCount.update(update_counter)
 
-      {:ok, {station_dict, new_counter}}
+      {:ok, {next_station_ids, new_counter}}
     end
 
-    {:done, {full_station_dict, _counter}} = CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
-
-    existing_station_ids = CbstatsImporter.StationQuery.station_ids
-    CbstatsImporter.StationImporter.import_stations(full_station_dict, existing_station_ids)
+    {:done, _} = CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
   end
 
   def import_readings(files) do
@@ -58,7 +62,7 @@ defmodule Mix.Tasks.Import do
 
       {:ok, new_counter}
     end
-    CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
+    {:done, _} = CbstatsImporter.ParallelImporter.import(files, child_fun, callback_fun)
   end
 end
 

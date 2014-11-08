@@ -1,9 +1,10 @@
 defmodule CbstatsImporterTest.TestHelper do
   import Ecto.Query
 
-  def drop_readings do
-    query = from CbstatsImporter.Reading, where: true
-    CbstatsImporter.Repo.delete_all(query)
+  def drop_models do
+    CbstatsImporter.Repo.delete_all(from CbstatsImporter.Reading, where: true)
+    CbstatsImporter.Repo.delete_all(from CbstatsImporter.Station, where: true)
+
     :ok
   end
 end
@@ -14,10 +15,10 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
   import ExUnit.CaptureIO
 
   setup do
-    CbstatsImporterTest.TestHelper.drop_readings
+    CbstatsImporterTest.TestHelper.drop_models
 
     on_exit fn ->
-      CbstatsImporterTest.TestHelper.drop_readings
+      CbstatsImporterTest.TestHelper.drop_models
     end
 
     :ok
@@ -29,8 +30,23 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
       Mix.Tasks.Import.run(["--path", "test/fixtures/data/json"])
     end) =~ ~r{\[100.0%\] [\d.]* files/s}
 
-    query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
-    readings = CbstatsImporter.Repo.all(query)
+    stations_query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
+    stations_query = from s in CbstatsImporter.Station, select: s, order_by: [asc: s.id]
+    stations = CbstatsImporter.Repo.all(stations_query)
+    s1 = Enum.at(stations, 0)
+    assert s1.id == 1
+    assert s1.label == "Station 1"
+    assert s1.latitude == 10.1
+    assert s1.longitude == -10.2
+
+    s2 = Enum.at(stations, 1)
+    assert s2.id == 2
+    assert s2.label == "Station 2"
+    assert s2.latitude == 10.3
+    assert s2.longitude == -10.4
+
+    readings_query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
+    readings = CbstatsImporter.Repo.all(readings_query)
     r1 = Enum.at(readings, 0)
     assert r1.station_id == 1
     assert r1.status == "Active"
