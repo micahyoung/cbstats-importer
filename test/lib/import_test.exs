@@ -30,7 +30,6 @@ defmodule CbstatsImporterTest.Mix.Tasks.Import do
       Mix.Tasks.Import.run(["--path", "test/fixtures/data/json"])
     end) =~ ~r{\[100.0%\] [\d.]* files/s}
 
-    stations_query = from r in CbstatsImporter.Reading, select: r, order_by: [asc: r.taken_at, asc: r.station_id]
     stations_query = from s in CbstatsImporter.Station, select: s, order_by: [asc: s.id]
     stations = CbstatsImporter.Repo.all(stations_query)
     s1 = Enum.at(stations, 0)
