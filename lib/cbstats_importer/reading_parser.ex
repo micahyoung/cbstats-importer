@@ -1,6 +1,6 @@
 defmodule CbstatsImporter.ReadingParser do
   def parse_json(json_content) do
-    {:ok, json_hash} = JSON.decode(json_content)
+    {:ok, json_hash} = Poison.decode(json_content)
     {:ok, timestamp} = Map.fetch(json_hash, "lastUpdate")
     reading_datetime = timestamp_datetime(timestamp)
 

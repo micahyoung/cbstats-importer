@@ -22,6 +22,6 @@ defmodule CbstatsImporter.Mixfile do
   defp deps do
     [ {:ecto, "~> 0.2.5", git: "https://github.com/elixir-lang/ecto", tag: "v0.2.5"},
       {:postgrex, "~> 0.6.0", override: true, git: "https://github.com/ericmj/postgrex", tag: "v0.6.0"},
-      {:json, "~> 0.3.0", git: "https://github.com/cblage/elixir-json", tag: "v0.3.2"} ]
+      {:poison, "~> 1.2.0", git: "https://github.com/devinus/poison", tag: "1.2.0"} ]
   end
 end
