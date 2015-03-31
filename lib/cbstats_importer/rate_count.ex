@@ -26,11 +26,11 @@ defmodule CbstatsImporter.RateCount do
   end
 
   defp get_percent(current_count, total_count) do
-    Float.floor(100 * (current_count + 1) / total_count)
+    round(100 * (current_count + 1) / total_count)
   end
 
   defp get_rate(elapsed_records, elapsed_micros) do
-    Float.floor(elapsed_records / (elapsed_micros / 1_000_000))
+    round(elapsed_records / (elapsed_micros / 1_000_000))
   end
 end
 

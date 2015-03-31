@@ -5,6 +5,6 @@ defmodule CbstatsImporter.Util do
   end
 
   def now_datetime do
-    :calendar.universal_time |> Ecto.DateTime.from_erl
+    Ecto.DateTime.utc
   end
 end

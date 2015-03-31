@@ -20,8 +20,8 @@ defmodule CbstatsImporter.Mixfile do
   # To specify particular versions, regardless of the tag, do:
   # { :barbat, "~> 0.1", github: "elixir-lang/barbat" }
   defp deps do
-    [ {:ecto, "~> 0.2.5", git: "https://github.com/elixir-lang/ecto", tag: "v0.2.5"},
-      {:postgrex, "~> 0.6.0", override: true, git: "https://github.com/ericmj/postgrex", tag: "v0.6.0"},
+    [ { :ecto, github: "elixir-lang/ecto" },
+      { :postgrex, ">= 0.0.0" },
       {:poison, "~> 1.2.0", git: "https://github.com/devinus/poison", tag: "1.2.0"} ]
   end
 end

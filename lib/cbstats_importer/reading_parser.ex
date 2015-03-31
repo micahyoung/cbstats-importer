@@ -10,6 +10,13 @@ defmodule CbstatsImporter.ReadingParser do
 
   defp timestamp_datetime(timestamp) do
     erl_base_datetime = :calendar.datetime_to_gregorian_seconds({{1970,1,1},{0,0,0}})
-    timestamp |> + erl_base_datetime |> :calendar.gregorian_seconds_to_datetime |> Ecto.DateTime.from_erl
+    dt = timestamp |> + erl_base_datetime |> :calendar.gregorian_seconds_to_datetime |> erl_load
+    dt
   end
+
+  defp erl_load({{year, month, day}, {hour, min, sec}}) do
+    %Ecto.DateTime{year: year, month: month, day: day,
+                   hour: hour, min: min, sec: sec}
+  end
+
 end

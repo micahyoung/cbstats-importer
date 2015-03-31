@@ -6,7 +6,7 @@ defmodule CbstatsImporter.Station do
     field :latitude, :float
     field :longitude, :float
     field :label, :string
-    field :created_at, :datetime
-    field :updated_at, :datetime
+    field :created_at, Ecto.DateTime
+    field :updated_at, Ecto.DateTime
   end
 end
